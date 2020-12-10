@@ -8,10 +8,6 @@ import (
 	trellisCmd "trellis-cli/cmd"
 )
 
-type PlaybookRunner interface {
-	Run(playbookYml string, args []string) error
-}
-
 type Playbook struct {
 	Root string
 	UI   cli.Ui
