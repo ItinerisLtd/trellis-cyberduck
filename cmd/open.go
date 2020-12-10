@@ -58,7 +58,10 @@ const cyberduckBookmarkJ2 = `
 
 // openCmd represents the open command
 var openCmd = &cobra.Command{
-	Use:   "open [<flags>] <environment> [<site>]",
+	Use:   "open <environment> [<site>]",
+	Example: `  $ trellis-cyberduck open production example.com
+  $ trellis-cyberduck open staging my-site
+`,
 	Short: "Open SFTP connections to Trellis servers",
 	Args:  cobra.RangeArgs(1, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
