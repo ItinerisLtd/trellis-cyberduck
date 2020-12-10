@@ -9,7 +9,6 @@ import (
 )
 
 type PlaybookRunner interface {
-	SetRoot(root string)
 	Run(playbookYml string, args []string) error
 }
 
