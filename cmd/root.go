@@ -6,10 +6,13 @@ import (
 	"os"
 )
 
+// To be replaced by goreleaser build flag.
+var version = "canary"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "trellis-cyberduck",
-	Version: "v0.1.0",
+	Version: version,
 	Short: "Trellis commands for Cyberduck",
 }
 
