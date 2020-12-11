@@ -24,6 +24,8 @@ jobs:
       - run: go version
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
+      - store_artifacts:
+          path: dist/
 
   release-dry-run:
     executor:
