@@ -114,11 +114,8 @@ var openCmd = &cobra.Command{
 			"-e", "site=" + siteName,
 			"-e", "dest=" + fmt.Sprintf("%s/cyberduck-%d.duck", trellis.Path, time.Now().UnixNano()),
 		}
-		if err := playbook.Run("cyberduck_open.yml", playbookArgs); err != nil {
-			return err
-		}
 
-		return nil
+		return playbook.Run("cyberduck_open.yml", playbookArgs)
 	},
 }
 
