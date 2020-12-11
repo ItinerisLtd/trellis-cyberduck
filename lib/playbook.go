@@ -2,7 +2,6 @@ package lib
 
 import (
 	"errors"
-	"fmt"
 	"github.com/mitchellh/cli"
 	"os"
 	trellisCmd "trellis-cli/cmd"
@@ -19,11 +18,8 @@ func (p *Playbook) Run(playbookYml string, args []string) error {
 	}
 
 	if p.UI == nil {
-		fmt.Print("no UI")
 		return errors.New("Playbook.UI is nil; This is a flaw in the source code. Please send bug report")
 	}
-
-	fmt.Print("has UI")
 
 	command := trellisCmd.CommandExecWithOutput("ansible-playbook", append([]string{playbookYml}, args...), p.UI)
 	command.Dir = p.Root
