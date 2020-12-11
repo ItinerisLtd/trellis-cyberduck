@@ -3,9 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/itinerisltd/trellis-cyberduck/lib"
-	"github.com/mitchellh/cli"
 	"github.com/spf13/cobra"
-	"os"
 	"strings"
 	"time"
 	trellisLib "trellis-cli/trellis"
@@ -58,7 +56,7 @@ const cyberduckBookmarkJ2 = `
 
 // openCmd represents the open command
 var openCmd = &cobra.Command{
-	Use:   "open <environment> [<site>]",
+	Use: "open <environment> [<site>]",
 	Example: `  $ trellis-cyberduck open production example.com
   $ trellis-cyberduck open staging my-site
 `,
@@ -89,15 +87,6 @@ var openCmd = &cobra.Command{
 		}
 
 		// Open!
-		ui := &cli.ColoredUi{
-			ErrorColor: cli.UiColorRed,
-			Ui: &cli.BasicUi{
-				Reader:      os.Stdin,
-				Writer:      os.Stdout,
-				ErrorWriter: os.Stderr,
-			},
-		}
-
 		playbook := lib.AdHocPlaybook{
 			Files: map[string]string{
 				"cyberduck_open.yml":    cyberduckOpenYml,
@@ -105,7 +94,6 @@ var openCmd = &cobra.Command{
 			},
 			Playbook: lib.Playbook{
 				Root: trellis.Path,
-				UI:   ui,
 			},
 		}
 

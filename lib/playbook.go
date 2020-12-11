@@ -2,14 +2,12 @@ package lib
 
 import (
 	"errors"
-	"github.com/mitchellh/cli"
 	"os"
-	trellisCmd "trellis-cli/cmd"
+	"os/exec"
 )
 
 type Playbook struct {
 	Root string
-	UI   cli.Ui
 }
 
 func (p *Playbook) Run(playbookYml string, args []string) error {
@@ -17,12 +15,13 @@ func (p *Playbook) Run(playbookYml string, args []string) error {
 		return errors.New("Playbook.Root is empty; This is a flaw in the source code. Please send bug report")
 	}
 
-	if p.UI == nil {
-		return errors.New("Playbook.UI is nil; This is a flaw in the source code. Please send bug report")
-	}
+	commandArgs := append([]string{playbookYml}, args...)
 
-	command := trellisCmd.CommandExecWithOutput("ansible-playbook", append([]string{playbookYml}, args...), p.UI)
+	command := exec.Command("ansible-playbook", commandArgs...)
 	command.Dir = p.Root
+	command.Stdin = os.Stdin
+	command.Stderr = os.Stderr
+	command.Stdout = os.Stdout
 
 	env := os.Environ()
 	// To allow mockExecCommand injects its environment variables.
