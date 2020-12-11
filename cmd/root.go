@@ -10,7 +10,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "trellis-cyberduck",
 	Version: "v0.1.0",
-	Short: "Commands for Cyberduck",
+	Short: "Trellis commands for Cyberduck",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
