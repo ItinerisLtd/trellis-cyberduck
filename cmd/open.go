@@ -20,8 +20,8 @@ func init() {
 		Short: "Open SFTP connections to Trellis servers",
 		Args:  cobra.RangeArgs(1, 2),
 		PreRun: func(cmd *cobra.Command, args []string) {
-			ui := lib.NewUiFromCobraCommand(cmd)
-			opener.SetUi(ui)
+			io := lib.NewIoFromCobraCommand(cmd)
+			opener.SetIo(io)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			maybeSite := ""

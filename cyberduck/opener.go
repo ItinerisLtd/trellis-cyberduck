@@ -54,24 +54,24 @@ const cyberduckBookmarkJ2 = `
 `
 
 type Opener struct {
-	ui *lib.Ui
+	io *lib.Io
 }
 
 func NewOpener() *Opener {
 	return &Opener{
-		ui: lib.NewUi(),
+		io: lib.NewIo(),
 	}
 }
 
-func (o *Opener) SetUi(ui *lib.Ui) {
-	o.ui = ui
+func (o *Opener) SetIo(io *lib.Io) {
+	o.io = io
 }
 
 func (o *Opener) Open(path string, environment string, siteName string, isAdmin bool) error {
 	playbook := lib.NewAdHocPlaybook(map[string]string{
 		"cyberduck_open.yml":    strings.TrimSpace(cyberduckOpenYml) + "\n",
 		"cyberduck_bookmark.j2": strings.TrimSpace(cyberduckBookmarkJ2) + "\n",
-	}, path, o.ui)
+	}, path, o.io)
 
 	playbookArgs := []string{
 		"-e", "dest=" + fmt.Sprintf("%s/cyberduck-%d.duck", path, time.Now().UnixNano()),
