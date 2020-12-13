@@ -9,14 +9,14 @@ import (
 type AdHocPlaybook struct {
 	files map[string]string
 	root  string
-	ui    *Ui
+	io    *Io
 }
 
-func NewAdHocPlaybook(files map[string]string, root string, ui *Ui) *AdHocPlaybook {
+func NewAdHocPlaybook(files map[string]string, root string, io *Io) *AdHocPlaybook {
 	return &AdHocPlaybook{
 		files: files,
 		root:  root,
-		ui:    ui,
+		io:    io,
 	}
 }
 
@@ -31,7 +31,7 @@ func (p *AdHocPlaybook) Run(name string, args []string) (err error) {
 		return err
 	}
 
-	playbook := NewPlaybook(p.root, p.ui)
+	playbook := NewPlaybook(p.root, p.io)
 	return playbook.Run(name, args)
 }
 

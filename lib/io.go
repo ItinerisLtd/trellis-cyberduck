@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Ui struct {
+type Io struct {
 	// inReader is a reader defined by the user that replaces stdin
 	inReader io.Reader
 	// outWriter is a writer defined by the user that replaces stdout
@@ -16,16 +16,16 @@ type Ui struct {
 	errWriter io.Writer
 }
 
-func NewUi() *Ui {
-	return &Ui{
+func NewIo() *Io {
+	return &Io{
 		inReader:  os.Stdin,
 		outWriter: os.Stdout,
 		errWriter: os.Stderr,
 	}
 }
 
-func NewUiFromCobraCommand(cmd *cobra.Command) *Ui {
-	return &Ui{
+func NewIoFromCobraCommand(cmd *cobra.Command) *Io {
+	return &Io{
 		inReader:  cmd.InOrStdin(),
 		outWriter: cmd.OutOrStdout(),
 		errWriter: cmd.ErrOrStderr(),
@@ -34,42 +34,42 @@ func NewUiFromCobraCommand(cmd *cobra.Command) *Ui {
 
 // SetOut sets the destination for usage messages.
 // If newOut is nil, os.Stdout is used.
-func (u *Ui) SetOut(newOut io.Writer) {
-	u.outWriter = newOut
+func (i *Io) SetOut(newOut io.Writer) {
+	i.outWriter = newOut
 }
 
 // SetErr sets the destination for error messages.
 // If newErr is nil, os.Stderr is used.
-func (u *Ui) SetErr(newErr io.Writer) {
-	u.errWriter = newErr
+func (i *Io) SetErr(newErr io.Writer) {
+	i.errWriter = newErr
 }
 
 // SetIn sets the source for input data
 // If newIn is nil, os.Stdin is used.
-func (u *Ui) SetIn(newIn io.Reader) {
-	u.inReader = newIn
+func (i *Io) SetIn(newIn io.Reader) {
+	i.inReader = newIn
 }
 
 // OutOrStdout returns output to stdout.
-func (u *Ui) OutOrStdout() io.Writer {
-	if u.outWriter != nil {
-		return u.outWriter
+func (i *Io) OutOrStdout() io.Writer {
+	if i.outWriter != nil {
+		return i.outWriter
 	}
 	return os.Stdout
 }
 
 // ErrOrStderr returns output to stderr
-func (u *Ui) ErrOrStderr() io.Writer {
-	if u.errWriter != nil {
-		return u.errWriter
+func (i *Io) ErrOrStderr() io.Writer {
+	if i.errWriter != nil {
+		return i.errWriter
 	}
 	return os.Stderr
 }
 
 // InOrStdin returns input to stdin
-func (u *Ui) InOrStdin() io.Reader {
-	if u.inReader != nil {
-		return u.inReader
+func (i *Io) InOrStdin() io.Reader {
+	if i.inReader != nil {
+		return i.inReader
 	}
 	return os.Stdin
 }
