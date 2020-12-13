@@ -2,6 +2,7 @@ package cyberduck
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -12,7 +13,6 @@ const cyberduckOpenYml = `
 ---
 - name: 'Trellis CLI: Dump database credentials'
   hosts: web:&{{ env }}
-  remote_user: "{{ web_user }}"
   gather_facts: false
   connection: local
   tasks:
@@ -46,7 +46,7 @@ const cyberduckBookmarkJ2 = `
 	<key>Port</key>
 	<string>{{ ansible_port | default('22') }}</string>
 	<key>Username</key>
-	<string>{{ web_user }}</string>
+	<string>{{ is_admin | bool | ternary(admin_user, web_user) }}</string>
 	<key>Path</key>
 	<string>{{ project_root | default(www_root + '/' + item.key) | regex_replace('^~\/','') }}/{{ item.current_path | default('current') }}</string>
 </dict>
@@ -67,16 +67,17 @@ func (o *Opener) SetUi(ui *lib.Ui) {
 	o.ui = ui
 }
 
-func (o *Opener) Open(path string, environment string, siteName string) error {
+func (o *Opener) Open(path string, environment string, siteName string, isAdmin bool) error {
 	playbook := lib.NewAdHocPlaybook(map[string]string{
 		"cyberduck_open.yml":    strings.TrimSpace(cyberduckOpenYml) + "\n",
 		"cyberduck_bookmark.j2": strings.TrimSpace(cyberduckBookmarkJ2) + "\n",
 	}, path, o.ui)
 
 	playbookArgs := []string{
+		"-e", "dest=" + fmt.Sprintf("%s/cyberduck-%d.duck", path, time.Now().UnixNano()),
 		"-e", "env=" + environment,
 		"-e", "site=" + siteName,
-		"-e", "dest=" + fmt.Sprintf("%s/cyberduck-%d.duck", path, time.Now().UnixNano()),
+		"-e", "is_admin=" + strconv.FormatBool(isAdmin),
 	}
 
 	return playbook.Run("cyberduck_open.yml", playbookArgs)
