@@ -10,7 +10,7 @@ import (
 
 const cyberduckOpenYml = `
 ---
-- name: 'Trellis CLI: Dump database credentials'
+- name: 'Trellis Cyberduck: Open SFTP connetions via Cyberduck'
   hosts: web:&{{ env }}
   gather_facts: false
   connection: local
@@ -18,6 +18,12 @@ const cyberduckOpenYml = `
     - name: Print debug message
       debug:
         msg: "Generating bookmark file at {{ dest }}"
+    - name: Include deploy role variables
+      include_vars: 
+        dir: "{{ playbook_dir }}/roles/deploy/defaults"
+    - name: Include trellis-cyberduck variables
+      include_vars:
+        file: "{{ playbook_dir }}/cyberduck_defaults.yml"
     - name: Generate bookmark file
       template:
         src: cyberduck_bookmark.j2
@@ -31,6 +37,12 @@ const cyberduckOpenYml = `
       file:
         path: "{{ dest }}"
         state: absent
+`
+
+const cyberduckDefaultsYml = `
+---
+project_uploads_path: "{{ project_root }}/shared/uploads"
+project_current_symlink_path: "{{ project_root + '/' + project_current_path }}"
 `
 
 const cyberduckBookmarkJ2 = `
@@ -47,7 +59,7 @@ const cyberduckBookmarkJ2 = `
 	<key>Username</key>
 	<string>{{ lookup('vars', user + '_user') }}</string>
 	<key>Path</key>
-	<string>{{ project_root | default(www_root + '/' + item.key) | regex_replace('^~\/','') }}/{{ item.current_path | default('current') }}</string>
+	<string>{{ lookup('vars', directory) }}</string>
 </dict>
 </plist>
 `
@@ -66,9 +78,10 @@ func (o *Opener) SetIo(io lib.OutErrWriter) {
 	o.io = io
 }
 
-func (o *Opener) Open(path string, environment string, siteName string, user string) error {
+func (o *Opener) Open(path string, environment string, siteName string, user string, directory string) error {
 	playbook := lib.NewAdHocPlaybook(map[string]string{
 		"cyberduck_open.yml":    strings.TrimSpace(cyberduckOpenYml) + "\n",
+		"cyberduck_defaults.yml": strings.TrimSpace(cyberduckDefaultsYml) + "\n",
 		"cyberduck_bookmark.j2": strings.TrimSpace(cyberduckBookmarkJ2) + "\n",
 	}, o.io)
 
@@ -77,6 +90,7 @@ func (o *Opener) Open(path string, environment string, siteName string, user str
 		"-e", "env=" + environment,
 		"-e", "site=" + siteName,
 		"-e", "user=" + user,
+		"-e", "directory=" + directory,
 	}
 
 	return playbook.Run(path, "cyberduck_open.yml", playbookArgs)
