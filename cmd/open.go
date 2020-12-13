@@ -9,12 +9,13 @@ import (
 
 func init() {
 	opener := cyberduck.NewOpener()
+	isAdmin := false
 
 	// openCmd represents the open command
 	openCmd := &cobra.Command{
 		Use: "open <environment> [<site>]",
 		Example: `  $ trellis-cyberduck open production example.com
-  $ trellis-cyberduck open staging my-site
+  $ trellis-cyberduck open staging my-site --admin
 `,
 		Short: "Open SFTP connections to Trellis servers",
 		Args:  cobra.RangeArgs(1, 2),
@@ -35,9 +36,11 @@ func init() {
 			}
 
 			// Open!
-			return opener.Open(path, env, site)
+			return opener.Open(path, env, site, isAdmin)
 		},
 	}
+
+	openCmd.Flags().BoolVarP(&isAdmin, "admin", "a", false, "Connect as admin user")
 
 	rootCmd.AddCommand(openCmd)
 }

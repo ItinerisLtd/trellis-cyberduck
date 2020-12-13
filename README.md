@@ -40,11 +40,12 @@ Usage:
 
 Examples:
   $ trellis-cyberduck open production example.com
-  $ trellis-cyberduck open staging my-site
+  $ trellis-cyberduck open staging my-site --admin
 
 
 Flags:
-  -h, --help   help for open
+  -a, --admin   Connect as admin user
+  -h, --help    help for open
 ```
 
 If you have [trellis-cli](https://github.com/roots/trellis-cli) v0.10.0 or later installed, you can run it as a plugin command like so `$ trellis cyberduck --help`.
