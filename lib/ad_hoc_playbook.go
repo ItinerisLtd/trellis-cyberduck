@@ -8,36 +8,35 @@ import (
 
 type AdHocPlaybook struct {
 	files map[string]string
-	root  string
-	io    *Io
+	Playbook
 }
 
-func NewAdHocPlaybook(files map[string]string, root string, io *Io) *AdHocPlaybook {
+func NewAdHocPlaybook(files map[string]string, io OutErrWriter) *AdHocPlaybook {
 	return &AdHocPlaybook{
 		files: files,
-		root:  root,
-		io:    io,
+		Playbook: Playbook{
+			io: io,
+		},
 	}
 }
 
-func (p *AdHocPlaybook) Run(name string, args []string) (err error) {
+func (p *AdHocPlaybook) Run(path string, name string, args []string) (err error) {
 	defer func() {
-		if removeFilesErr := p.removeFiles(); removeFilesErr != nil {
+		if removeFilesErr := p.removeFiles(path); removeFilesErr != nil {
 			err = removeFilesErr
 		}
 	}()
 
-	if err := p.dumpFiles(); err != nil {
+	if err := p.dumpFiles(path); err != nil {
 		return err
 	}
 
-	playbook := NewPlaybook(p.root, p.io)
-	return playbook.Run(name, args)
+	return p.Playbook.Run(path, name, args)
 }
 
-func (p *AdHocPlaybook) dumpFiles() error {
+func (p *AdHocPlaybook) dumpFiles(path string) error {
 	for fileName, content := range p.files {
-		destination := filepath.Join(p.root, fileName)
+		destination := filepath.Join(path, fileName)
 		contentByte := []byte(content)
 
 		if err := ioutil.WriteFile(destination, contentByte, 0644); err != nil {
@@ -48,9 +47,9 @@ func (p *AdHocPlaybook) dumpFiles() error {
 	return nil
 }
 
-func (p *AdHocPlaybook) removeFiles() error {
+func (p *AdHocPlaybook) removeFiles(path string) error {
 	for fileName, _ := range p.files {
-		destination := filepath.Join(p.root, fileName)
+		destination := filepath.Join(path, fileName)
 
 		if err := os.Remove(destination); err != nil {
 			return err

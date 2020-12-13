@@ -30,12 +30,11 @@ func init() {
 			}
 
 			trellis := lib.Trellis{}
-			path, env, site, err := trellis.Detect(args[0], maybeSite)
+			_, path, env, site, err := trellis.DetectPathAndEnvAndSite(args[0], maybeSite)
 			if err != nil {
 				return err
 			}
 
-			// Open!
 			return opener.Open(path, env, site, isAdmin)
 		},
 	}

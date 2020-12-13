@@ -54,7 +54,7 @@ const cyberduckBookmarkJ2 = `
 `
 
 type Opener struct {
-	io *lib.Io
+	io lib.OutErrWriter
 }
 
 func NewOpener() *Opener {
@@ -63,7 +63,7 @@ func NewOpener() *Opener {
 	}
 }
 
-func (o *Opener) SetIo(io *lib.Io) {
+func (o *Opener) SetIo(io lib.OutErrWriter) {
 	o.io = io
 }
 
@@ -71,7 +71,7 @@ func (o *Opener) Open(path string, environment string, siteName string, isAdmin 
 	playbook := lib.NewAdHocPlaybook(map[string]string{
 		"cyberduck_open.yml":    strings.TrimSpace(cyberduckOpenYml) + "\n",
 		"cyberduck_bookmark.j2": strings.TrimSpace(cyberduckBookmarkJ2) + "\n",
-	}, path, o.io)
+	}, o.io)
 
 	playbookArgs := []string{
 		"-e", "dest=" + fmt.Sprintf("%s/cyberduck-%d.duck", path, time.Now().UnixNano()),
@@ -80,5 +80,5 @@ func (o *Opener) Open(path string, environment string, siteName string, isAdmin 
 		"-e", "is_admin=" + strconv.FormatBool(isAdmin),
 	}
 
-	return playbook.Run("cyberduck_open.yml", playbookArgs)
+	return playbook.Run(path, "cyberduck_open.yml", playbookArgs)
 }
