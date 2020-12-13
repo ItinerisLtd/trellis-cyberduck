@@ -2,7 +2,6 @@ package cyberduck
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -46,7 +45,7 @@ const cyberduckBookmarkJ2 = `
 	<key>Port</key>
 	<string>{{ ansible_port | default('22') }}</string>
 	<key>Username</key>
-	<string>{{ is_admin | bool | ternary(admin_user, web_user) }}</string>
+	<string>{{ lookup('vars', user + '_user') }}</string>
 	<key>Path</key>
 	<string>{{ project_root | default(www_root + '/' + item.key) | regex_replace('^~\/','') }}/{{ item.current_path | default('current') }}</string>
 </dict>
@@ -67,7 +66,7 @@ func (o *Opener) SetIo(io lib.OutErrWriter) {
 	o.io = io
 }
 
-func (o *Opener) Open(path string, environment string, siteName string, isAdmin bool) error {
+func (o *Opener) Open(path string, environment string, siteName string, user string) error {
 	playbook := lib.NewAdHocPlaybook(map[string]string{
 		"cyberduck_open.yml":    strings.TrimSpace(cyberduckOpenYml) + "\n",
 		"cyberduck_bookmark.j2": strings.TrimSpace(cyberduckBookmarkJ2) + "\n",
@@ -77,7 +76,7 @@ func (o *Opener) Open(path string, environment string, siteName string, isAdmin 
 		"-e", "dest=" + fmt.Sprintf("%s/cyberduck-%d.duck", path, time.Now().UnixNano()),
 		"-e", "env=" + environment,
 		"-e", "site=" + siteName,
-		"-e", "is_admin=" + strconv.FormatBool(isAdmin),
+		"-e", "user=" + user,
 	}
 
 	return playbook.Run(path, "cyberduck_open.yml", playbookArgs)

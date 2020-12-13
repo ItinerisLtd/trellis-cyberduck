@@ -44,8 +44,8 @@ Examples:
 
 
 Flags:
-  -a, --admin   Connect as admin user
-  -h, --help    help for open
+  -h, --help          help for open
+  -u, --user string   Connect as web or admin user. Option: web|admin (default "web")
 ```
 
 If you have [trellis-cli](https://github.com/roots/trellis-cli) v0.10.0 or later installed, you can run it as a plugin command like so `$ trellis cyberduck --help`.

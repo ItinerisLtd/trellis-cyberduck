@@ -9,7 +9,7 @@ import (
 
 func init() {
 	opener := cyberduck.NewOpener()
-	isAdmin := false
+	user := ""
 
 	// openCmd represents the open command
 	openCmd := &cobra.Command{
@@ -35,11 +35,11 @@ func init() {
 				return err
 			}
 
-			return opener.Open(path, env, site, isAdmin)
+			return opener.Open(path, env, site, user)
 		},
 	}
 
-	openCmd.Flags().BoolVarP(&isAdmin, "admin", "a", false, "Connect as admin user")
+	openCmd.Flags().StringVarP(&user, "user", "u", "web", "Connect as web or admin user. Option: web|admin")
 
 	rootCmd.AddCommand(openCmd)
 }
