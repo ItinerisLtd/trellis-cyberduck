@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 // To be replaced by goreleaser build flag.
@@ -11,9 +12,9 @@ var version = "canary"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "trellis-cyberduck",
+	Use:     "trellis-cyberduck",
 	Version: version,
-	Short: "Trellis commands for Cyberduck",
+	Short:   "Trellis commands for Cyberduck",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

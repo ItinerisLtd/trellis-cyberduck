@@ -1,22 +1,26 @@
 package lib
 
 import (
-	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 )
 
 type AdHocPlaybook struct {
-	Playbook
-	Files map[string]string
+	files map[string]string
+	root  string
+	ui    *Ui
 }
 
-func (p *AdHocPlaybook) Run(playbookYml string, args []string) (err error) {
-	if len(p.Files) == 0 {
-		return errors.New("AdHocPlaybook.Files is empty; This is a flaw in the source code. Please send bug report")
+func NewAdHocPlaybook(files map[string]string, root string, ui *Ui) *AdHocPlaybook {
+	return &AdHocPlaybook{
+		files: files,
+		root:  root,
+		ui:    ui,
 	}
+}
 
+func (p *AdHocPlaybook) Run(name string, args []string) (err error) {
 	defer func() {
 		if removeFilesErr := p.removeFiles(); removeFilesErr != nil {
 			err = removeFilesErr
@@ -27,12 +31,13 @@ func (p *AdHocPlaybook) Run(playbookYml string, args []string) (err error) {
 		return err
 	}
 
-	return p.Playbook.Run(playbookYml, args)
+	playbook := NewPlaybook(p.root, p.ui)
+	return playbook.Run(name, args)
 }
 
 func (p *AdHocPlaybook) dumpFiles() error {
-	for fileName, content := range p.Files {
-		destination := filepath.Join(p.Root, fileName)
+	for fileName, content := range p.files {
+		destination := filepath.Join(p.root, fileName)
 		contentByte := []byte(content)
 
 		if err := ioutil.WriteFile(destination, contentByte, 0644); err != nil {
@@ -44,8 +49,8 @@ func (p *AdHocPlaybook) dumpFiles() error {
 }
 
 func (p *AdHocPlaybook) removeFiles() error {
-	for fileName, _ := range p.Files {
-		destination := filepath.Join(p.Root, fileName)
+	for fileName, _ := range p.files {
+		destination := filepath.Join(p.root, fileName)
 
 		if err := os.Remove(destination); err != nil {
 			return err

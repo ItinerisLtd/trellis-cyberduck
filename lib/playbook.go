@@ -1,35 +1,34 @@
 package lib
 
 import (
-	"errors"
-	"github.com/mitchellh/cli"
 	"os"
-	trellisCmd "trellis-cli/cmd"
+	"os/exec"
 )
 
 type Playbook struct {
-	Root string
-	UI   cli.Ui
+	root string
+	ui   *Ui
 }
 
-func (p *Playbook) Run(playbookYml string, args []string) error {
-	if p.Root == "" {
-		return errors.New("Playbook.Root is empty; This is a flaw in the source code. Please send bug report")
+func NewPlaybook(root string, ui *Ui) *Playbook {
+	return &Playbook{
+		root: root,
+		ui:   ui,
 	}
+}
 
-	if p.UI == nil {
-		return errors.New("Playbook.UI is nil; This is a flaw in the source code. Please send bug report")
-	}
+func (p *Playbook) Run(name string, args []string) error {
+	commandArgs := append([]string{name}, args...)
 
-	command := trellisCmd.CommandExecWithOutput("ansible-playbook", append([]string{playbookYml}, args...), p.UI)
-	command.Dir = p.Root
+	command := exec.Command("ansible-playbook", commandArgs...)
 
-	env := os.Environ()
-	// To allow mockExecCommand injects its environment variables.
-	if command.Env != nil {
-		env = command.Env
-	}
-	command.Env = append(env, "ANSIBLE_RETRY_FILES_ENABLED=false")
+	command.Dir = p.root
+
+	command.Stdin = p.ui.InOrStdin()
+	command.Stdout = p.ui.OutOrStdout()
+	command.Stderr = p.ui.ErrOrStderr()
+
+	command.Env = append(os.Environ(), "ANSIBLE_RETRY_FILES_ENABLED=false")
 
 	return command.Run()
 }
