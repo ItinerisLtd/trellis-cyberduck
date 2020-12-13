@@ -16,8 +16,6 @@ archives:
       linux: Linux
       386: i386
       amd64: x86_64
-#checksum:
-#  name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
@@ -33,7 +31,7 @@ brews:
       owner: itinerisltd
       name: homebrew-tap
     folder: Formula
-    homepage:  https://github.com/ItinerisLtd/trellis-cyberduck
+    homepage: https://github.com/ItinerisLtd/trellis-cyberduck
     description: Trellis commands for Cyberduck
     license: MIT
     install: |
