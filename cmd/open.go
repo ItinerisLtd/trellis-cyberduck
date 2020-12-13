@@ -10,13 +10,14 @@ import (
 func init() {
 	opener := cyberduck.NewOpener()
 	user := ""
+	directory := ""
 
 	// openCmd represents the open command
 	openCmd := &cobra.Command{
 		Use: "open <environment> [<site>]",
 		Example: `  $ trellis-cyberduck open production example.com
-  $ trellis-cyberduck open staging my-site --admin
-`,
+  $ trellis-cyberduck open staging my-site --user admin
+  $ trellis-cyberduck open staging my-site --directory project_uploads_path`,
 		Short: "Open SFTP connections to Trellis servers",
 		Args:  cobra.RangeArgs(1, 2),
 		PreRun: func(cmd *cobra.Command, args []string) {
@@ -35,11 +36,12 @@ func init() {
 				return err
 			}
 
-			return opener.Open(path, env, site, user)
+			return opener.Open(path, env, site, user, directory)
 		},
 	}
 
-	openCmd.Flags().StringVarP(&user, "user", "u", "web", "Connect as web or admin user. Option: web|admin")
+	openCmd.Flags().StringVarP(&user, "user", "u", "web", "User to connect. Options: web|admin")
+	openCmd.Flags().StringVarP(&directory, "directory", "d", "project_root", "Directory to open. Options: project_root|project_source_path|project_uploads_path|project_current_symlink_path")
 
 	rootCmd.AddCommand(openCmd)
 }

@@ -40,12 +40,13 @@ Usage:
 
 Examples:
   $ trellis-cyberduck open production example.com
-  $ trellis-cyberduck open staging my-site --admin
-
+  $ trellis-cyberduck open staging my-site --user admin
+  $ trellis-cyberduck open staging my-site --directory project_uploads_path
 
 Flags:
-  -h, --help          help for open
-  -u, --user string   Connect as web or admin user. Option: web|admin (default "web")
+  -d, --directory string   Directory to open. Options: project_root|project_source_path|project_uploads_path|project_current_symlink_path (default "project_root")
+  -h, --help               help for open
+  -u, --user string        User to connect. Options: web|admin (default "web")
 ```
 
 If you have [trellis-cli](https://github.com/roots/trellis-cli) v0.10.0 or later installed, you can run it as a plugin command like so `$ trellis cyberduck --help`.
