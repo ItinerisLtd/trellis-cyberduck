@@ -8,14 +8,10 @@ builds:
     ldflags:
       - -X github.com/itinerisltd/trellis-cyberduck/cmd.version={{ .Version }}
     goos:
-      - linux
       - darwin
 archives:
   - replacements:
       darwin: Darwin
-      linux: Linux
-      386: i386
-      amd64: x86_64
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:

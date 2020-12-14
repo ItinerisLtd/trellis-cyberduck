@@ -65,7 +65,7 @@ If you have [trellis-cli](https://github.com/roots/trellis-cli) v0.10.0 or later
 
 It goes without saying, you should install [Cyberduck](https://cyberduck.io/) first.
 
-### macOS and Linux via Homebrew
+### Homebrew
 
 ```bash
 brew install itinerisltd/tap/trellis-cyberduck
@@ -79,9 +79,6 @@ trellis-cyberduck provides binary releases for a variety of OSes. These binary v
 1. Unpack it (`tar -zxvf trellis-cyberduck_0.1.0_Darwin_x86_64.tar.gz`)
 1. Find the `trellis-cyberduck` binary, and move it to its desired destination (`mv trellis-cyberduck /usr/local/bin/trellis-cyberduck`)
 1. Make sure the above path is in your `$PATH`
-
-Extra steps for macOS users:
-
 1. Run the command. You should see macOS is blocking it
 1. Grant an exception for the binary by clicking the **Open Anyway** button in the General pane of Security & Privacy preferences. This button is available for about an hour after you try to run the command
 
